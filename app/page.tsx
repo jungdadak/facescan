@@ -10,14 +10,16 @@ import { X } from "lucide-react";
 import MainBtn from "@/components/btn/MainBtn";
 import { cn } from "@/lib/cnUtil";
 import { useImageStore } from "@/store/imageStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function Home() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<"intro" | "upload">("intro");
-
+  const [imageFile, setImageFile] = useState<File | null>(null);
   const { setImageUrl, clearImageUrl, imageUrl } = useImageStore();
+  const { setUser, clearUser } = useUserStore();
 
   const stepConfig = {
     intro: {
@@ -39,6 +41,7 @@ export default function Home() {
       inputRef.current.value = "";
       inputRef.current.click();
     }
+    clearImageUrl();
     setStep("upload");
   };
 
@@ -50,9 +53,30 @@ export default function Home() {
       return;
     }
 
+    setImageFile(file);
+
     const blob = URL.createObjectURL(file);
     setImageUrl(blob);
     setStep("upload");
+  };
+
+  const handleCheckWhoYR = async () => {
+    if (!imageUrl || !imageFile) return;
+    clearUser();
+    const data = new FormData();
+    data.append("image", imageFile);
+
+    if (process.env.NODE_ENV !== "development") {
+      const res = await fetch("api/user", {
+        method: "POST",
+        body: data,
+      });
+
+      const user = await res.json();
+      setUser(user.userName);
+    } else setUser("권은비");
+
+    router.push("/loading");
   };
 
   return (
@@ -80,9 +104,7 @@ export default function Home() {
         </figcaption>
       </figure>
 
-      <MainBtn disabled={step === "upload"} onClick={handleInputOpen}>
-        나도 참여하기
-      </MainBtn>
+      <MainBtn onClick={handleInputOpen}>나도 참여하기</MainBtn>
 
       <input
         ref={inputRef}
@@ -110,9 +132,7 @@ export default function Home() {
             />
             <button
               type={"button"}
-              onClick={() => {
-                router.push("/loading");
-              }}
+              onClick={handleCheckWhoYR}
               className={
                 "rounded-sm p-2 text-lg font-medium hover:cursor-pointer hover:bg-white/20"
               }
