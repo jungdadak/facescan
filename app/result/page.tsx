@@ -1,6 +1,12 @@
+"use client";
+
+import { useEffect } from "react";
+
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import MainBtn from "@/components/btn/MainBtn";
+import { useImageStore } from "@/store/imageStore";
 
 const scoreList = {
   happy: "☺️ 행복지수",
@@ -9,6 +15,20 @@ const scoreList = {
 };
 
 export default function Result() {
+  const router = useRouter();
+  const { clearImageUrl } = useImageStore();
+  const imageUrl = useImageStore((s) => s.imageUrl);
+
+  useEffect(() => {
+    if (!imageUrl) {
+      router.push("/");
+    }
+  }, [imageUrl, router]);
+
+  if (!imageUrl) {
+    return;
+  }
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center">
       <img
@@ -28,12 +48,7 @@ export default function Result() {
         }
       >
         <div className="relative aspect-square h-36 w-36 overflow-hidden rounded-full">
-          <Image
-            src={"/zubin.webp"}
-            alt={"person"}
-            fill
-            className="object-cover"
-          />
+          <Image src={imageUrl} alt={"person"} fill className="object-cover" />
         </div>
 
         <h2 className={"mt-5 text-2xl leading-[33.6px] font-semibold"}>
@@ -59,7 +74,15 @@ export default function Result() {
         </div>
       </section>
 
-      <MainBtn className={"mt-10"}>다시 도전하기</MainBtn>
+      <MainBtn
+        onClick={() => {
+          clearImageUrl();
+          router.push("/");
+        }}
+        className={"mt-10"}
+      >
+        다시 도전하기
+      </MainBtn>
     </main>
   );
 }

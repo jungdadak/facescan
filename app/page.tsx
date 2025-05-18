@@ -3,17 +3,21 @@
 import { ChangeEvent, useRef, useState } from "react";
 
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 
 import { X } from "lucide-react";
 
 import MainBtn from "@/components/btn/MainBtn";
 import { cn } from "@/lib/cnUtil";
+import { useImageStore } from "@/store/imageStore";
 
 export default function Home() {
+  const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [step, setStep] = useState<"intro" | "upload">("intro");
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+
+  const { setImageUrl, clearImageUrl, imageUrl } = useImageStore();
 
   const stepConfig = {
     intro: {
@@ -47,7 +51,8 @@ export default function Home() {
     }
 
     const blob = URL.createObjectURL(file);
-    setPreviewUrl(blob);
+    setImageUrl(blob);
+    setStep("upload");
   };
 
   return (
@@ -65,7 +70,7 @@ export default function Home() {
       <figure
         className={cn(
           "mx-auto mt-16 flex h-[280px] w-[234px] items-center justify-center rounded-4xl border-2 border-white/10 bg-white/10",
-          previewUrl && "invisible",
+          imageUrl && "invisible",
         )}
         aria-labelledby="question-caption"
       >
@@ -87,7 +92,7 @@ export default function Home() {
         onChange={(e) => handleFileChanged(e)}
       />
 
-      {previewUrl && (
+      {imageUrl && (
         <div
           className={
             "absolute bottom-0 mx-auto mt-16 flex w-full max-w-[437px] flex-col justify-center rounded-t-4xl border-2 border-white/10 bg-white/10 pb-12"
@@ -99,13 +104,15 @@ export default function Home() {
               size={32}
               onClick={() => {
                 setStep("intro");
-                URL.revokeObjectURL(previewUrl);
-                setPreviewUrl(null);
+                clearImageUrl();
               }}
               className={"rounded-full hover:cursor-pointer hover:bg-white/20"}
             />
             <button
               type={"button"}
+              onClick={() => {
+                router.push("/loading");
+              }}
               className={
                 "rounded-sm p-2 text-lg font-medium hover:cursor-pointer hover:bg-white/20"
               }
@@ -115,7 +122,7 @@ export default function Home() {
           </div>
           {/*사용자 이미지 섹션*/}
           <Image
-            src={previewUrl}
+            src={imageUrl}
             alt="preview"
             width={400}
             height={300}
