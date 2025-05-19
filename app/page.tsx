@@ -74,7 +74,9 @@ export default function Home() {
 
       const user = await res.json();
       setUser(user.userName);
-    } else setUser("권은비");
+    } else {
+      setUser("권은비");
+    }
 
     router.push("/loading");
   };
