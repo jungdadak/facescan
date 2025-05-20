@@ -1,13 +1,28 @@
 import { create } from "zustand";
 
-interface UserStore {
-  userName: string | null;
-  setUser: (name: string) => void;
+import {
+  IFaceProcessingResult,
+  IUserFullDetailAnalysis,
+} from "@/fetcher/uploadImage";
+
+interface UserState {
+  nickname: string;
+  detailAnalysis: IUserFullDetailAnalysis | null;
+  setUserResult: (result: IFaceProcessingResult) => void;
   clearUser: () => void;
 }
 
-export const useUserStore = create<UserStore>((set) => ({
-  userName: null,
-  setUser: (name) => set({ userName: name }),
-  clearUser: () => set({ userName: null }),
+export const useUserStore = create<UserState>((set) => ({
+  nickname: "",
+  detailAnalysis: null,
+  setUserResult: (result) =>
+    set({
+      nickname: result.nickname,
+      detailAnalysis: result.detailAnalysis,
+    }),
+  clearUser: () =>
+    set({
+      nickname: "",
+      detailAnalysis: null,
+    }),
 }));

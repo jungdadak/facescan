@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 
 import MainBtn from "@/components/btn/MainBtn";
+import { uploadImage } from "@/fetcher/uploadImage";
 import { cn } from "@/lib/cnUtil";
 import { useImageStore } from "@/store/imageStore";
 import { useUserStore } from "@/store/userStore";
@@ -19,8 +20,7 @@ export default function Home() {
   const [step, setStep] = useState<"intro" | "upload">("intro");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const { setImageUrl, clearImageUrl, imageUrl } = useImageStore();
-  const { setUser, clearUser } = useUserStore();
-
+  const { setUserResult, clearUser } = useUserStore();
   const stepConfig = {
     intro: {
       message: (
@@ -45,7 +45,7 @@ export default function Home() {
     setStep("upload");
   };
 
-  const handleFileChanged = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleFileChanged = async (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
 
     if (!file) {
@@ -61,24 +61,37 @@ export default function Home() {
   };
 
   const handleCheckWhoYR = async () => {
-    if (!imageUrl || !imageFile) return;
+    if (!imageFile) return;
     clearUser();
-    const data = new FormData();
-    data.append("image", imageFile);
 
     if (process.env.NODE_ENV !== "development") {
-      const res = await fetch("api/user", {
-        method: "POST",
-        body: data,
-      });
+      const result = await uploadImage(imageFile);
 
-      const user = await res.json();
-      setUser(user.userName);
+      if (result) {
+        setUserResult(result);
+        router.push("/loading");
+      } else {
+        alert("분석 실패");
+      }
     } else {
-      setUser("권은비");
+      setUserResult({
+        nickname: "이주빈",
+        similarity: 99,
+        detailAnalysis: {
+          userId: "zubin",
+          name: "이주빈",
+          analyzedPhotoPath: "/zubin.webp",
+          analyzedAt: new Date().toISOString(),
+          overallRank: 1,
+          scores: {
+            happiness: { value: 90, uiValue: 90, rank: 1 },
+            fatigue: { value: 5, uiValue: 5, rank: 10 },
+            depression: { value: 2, uiValue: 2, rank: 20 },
+          },
+        },
+      });
+      router.push("/loading");
     }
-
-    router.push("/loading");
   };
 
   return (
