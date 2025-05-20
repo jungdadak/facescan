@@ -28,7 +28,7 @@ export default function LoadingPage() {
       <img
         src="/bg/main.png"
         alt=""
-        className="absolute inset-0 -z-10 mx-auto h-full max-w-xl object-contain"
+        className="absolute inset-0 -z-10 mx-auto h-full w-full object-cover"
       />
       <h1 className="mx-auto mt-[115px] h-[78px] w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px]">
         {nickname}님의 감정을 <br /> 분석해 볼까요?

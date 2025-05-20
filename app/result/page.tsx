@@ -36,7 +36,7 @@ export default function Result() {
       <img
         src="/bg/sub.png"
         alt="배경2"
-        className="absolute inset-0 -z-10 mx-auto h-full min-h-[813px] max-w-xl object-contain"
+        className="absolute inset-0 -z-10 mx-auto h-full min-h-[813px] w-full object-cover"
       />
       <h1 className="mx-auto mt-29 w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px]">
         나의 행복 랭킹은 {scores.happiness.rank}위!

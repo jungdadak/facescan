@@ -16,7 +16,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ko">
-      <body className="mx-auto max-w-xl antialiased">{children}</body>
+      <body className="mx-auto overflow-hidden antialiased md:max-w-xl">
+        {children}
+      </body>
     </html>
   );
 }

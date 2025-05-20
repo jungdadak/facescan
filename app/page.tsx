@@ -1,13 +1,15 @@
 "use client";
 
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 import { X } from "lucide-react";
 
+import { RankTable } from "@/components/RankTable";
 import MainBtn from "@/components/btn/MainBtn";
+import { RankItem, getRank } from "@/fetcher/getRank";
 import { uploadImage } from "@/fetcher/uploadImage";
 import { cn } from "@/lib/cnUtil";
 import { useImageStore } from "@/store/imageStore";
@@ -19,8 +21,29 @@ export default function Home() {
 
   const [step, setStep] = useState<"intro" | "upload">("intro");
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [ranking, setRanking] = useState<RankItem[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
   const { setImageUrl, clearImageUrl, imageUrl } = useImageStore();
   const { setUserResult, clearUser } = useUserStore();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const result = await getRank();
+        setRanking(result);
+      } catch (e) {
+        console.error(e);
+        setRanking([]);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const showIcon = ranking === null || ranking.length === 0;
+
   const stepConfig = {
     intro: {
       message: (
@@ -99,7 +122,7 @@ export default function Home() {
       <img
         src="/bg/main.png"
         alt=""
-        className="absolute inset-0 -z-10 mx-auto h-full max-w-xl object-contain"
+        className="absolute inset-0 -z-10 mx-auto h-full w-full object-cover"
       />
       <h1
         className={`mx-auto mt-[115px] h-[78px] w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px]`}
@@ -108,15 +131,27 @@ export default function Home() {
       </h1>
       <figure
         className={cn(
-          "mx-auto mt-16 flex h-[280px] w-[234px] items-center justify-center rounded-4xl border-2 border-white/10 bg-white/10",
-          imageUrl && "invisible",
+          "mx-auto mt-16 flex min-h-[280px] min-w-[234px] items-center justify-center rounded-4xl border-2 border-white/10 bg-white/10",
+          !showIcon && "invisible",
         )}
         aria-labelledby="question-caption"
       >
-        <Image src={"/icon/question.png"} alt={""} width={126} height={140} />
-        <figcaption id="question-caption" className="sr-only">
-          귀여운 물음표 아이콘
-        </figcaption>
+        {showIcon ? (
+          <>
+            <Image
+              src={"/icon/question.png"}
+              alt=""
+              width={126}
+              height={140}
+              className={cn("", loading && "animate-pulse")}
+            />
+            <figcaption id="question-caption" className="sr-only">
+              귀여운 물음표 아이콘
+            </figcaption>
+          </>
+        ) : (
+          <RankTable data={ranking!} />
+        )}
       </figure>
 
       <MainBtn onClick={handleInputOpen}>나도 참여하기</MainBtn>
