@@ -125,7 +125,7 @@ export default function Home() {
         className="absolute inset-0 -z-10 mx-auto h-full w-full object-cover"
       />
       <h1
-        className={`mx-auto mt-20 h-[78px] w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px]`}
+        className={`mx-auto mt-5 h-[78px] w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px] md:mt-[115px]`}
       >
         {stepConfig[step].message}
       </h1>
