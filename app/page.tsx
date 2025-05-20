@@ -133,6 +133,7 @@ export default function Home() {
         className={cn(
           "mx-auto mt-16 flex min-h-[280px] min-w-[234px] items-center justify-center rounded-4xl border-2 border-white/10 bg-white/10",
           !showIcon && "invisible",
+          step === "upload" && "invisible",
         )}
         aria-labelledby="question-caption"
       >
@@ -171,7 +172,7 @@ export default function Home() {
           }
         >
           {/*상단 x 확인 버튼섹션*/}
-          <div className="flex w-full items-center justify-between p-6">
+          <div className="flex w-full items-center justify-between p-3">
             <X
               size={32}
               onClick={() => {
