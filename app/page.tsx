@@ -127,13 +127,14 @@ export default function Home() {
       <h1
         className={`mx-auto mt-5 h-[78px] w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px] md:mt-[115px]`}
       >
-        {stepConfig[step].message}
+        {imageUrl ? "" : stepConfig[step].message}
       </h1>
       <figure
         className={cn(
-          "mx-auto mt-16 flex min-h-[280px] min-w-[234px] items-center justify-center rounded-4xl border-2 border-white/10 bg-white/10",
-          !showIcon && "invisible",
+          "mx-auto mt-16 flex min-h-[280px] min-w-[234px] items-center justify-center rounded-4xl border-2 border-white/10 bg-white/5 backdrop-blur-2xl",
+
           step === "upload" && "invisible",
+          !showIcon && "h-auto min-h-auto w-[304px] py-8",
         )}
         aria-labelledby="question-caption"
       >
@@ -185,7 +186,7 @@ export default function Home() {
               type={"button"}
               onClick={handleCheckWhoYR}
               className={
-                "rounded-sm p-2 text-lg font-medium hover:cursor-pointer hover:bg-white/20"
+                "rounded-sm p-2 text-lg font-semibold hover:cursor-pointer hover:bg-white/20"
               }
             >
               확인

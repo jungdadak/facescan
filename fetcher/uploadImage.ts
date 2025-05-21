@@ -1,5 +1,3 @@
-export const BE_URL = process.env.NEXT_PUBLIC_BE_URL || "http://localhost:8080";
-
 export interface IEmotionScoreDetail {
   value: number;
   uiValue: number;
@@ -31,20 +29,18 @@ export async function uploadImage(
 ): Promise<IFaceProcessingResult | null> {
   try {
     const formData = new FormData();
-    formData.append("file", image);
+    formData.append("image", image);
 
-    const res = await fetch(BE_URL + "/face", {
+    const res = await fetch("/api/upload", {
       method: "PATCH",
       body: formData,
     });
 
-    if (!res.ok) {
-      throw new Error("Upload failed");
-    }
+    if (!res.ok) throw new Error("업로드 실패");
 
     return await res.json();
   } catch (error) {
-    console.error(error);
+    console.error("uploadImage error:", error);
     return null;
   }
 }
