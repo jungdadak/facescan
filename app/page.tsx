@@ -123,6 +123,8 @@ export default function Home() {
         src="/bg/main.png"
         alt=""
         className="absolute inset-0 -z-10 mx-auto h-full w-full object-cover"
+        loading="eager"
+        fetchPriority="high"
       />
       <h1
         className={`mx-auto mt-5 h-[78px] w-[304px] text-center text-[28px] leading-[39.2px] font-bold tracking-[-0.56px] md:mt-[115px]`}
