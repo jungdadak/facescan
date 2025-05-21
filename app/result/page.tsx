@@ -23,12 +23,6 @@ export default function Result() {
   const nickname = useUserStore((s) => s.nickname);
   const scores = useUserStore((s) => s.detailAnalysis?.scores);
 
-  useEffect(() => {
-    if (!imageUrl || !scores) {
-      router.push("/");
-    }
-  }, [imageUrl, scores, router]);
-
   if (!imageUrl || !scores) return null;
 
   return (
