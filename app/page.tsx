@@ -171,7 +171,7 @@ export default function Home() {
       {imageUrl && (
         <div
           className={
-            "absolute bottom-0 mx-auto mt-16 flex w-full max-w-[437px] flex-col justify-center rounded-t-4xl border-2 border-white/10 bg-white/10 pb-12"
+            "absolute bottom-0 mx-auto mt-16 flex w-full max-w-xl flex-col justify-center rounded-t-4xl border-t-2 border-white/10 bg-white/10"
           }
         >
           {/*상단 x 확인 버튼섹션*/}
@@ -198,9 +198,9 @@ export default function Home() {
           <Image
             src={imageUrl}
             alt="preview"
-            width={400}
+            width={500}
             height={300}
-            className="max-h-[80%] min-h-[50%] w-full object-cover"
+            className="-ml-[1px] block w-[calc(100%+2px)] bg-black object-contain"
           />
         </div>
       )}
