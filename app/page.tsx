@@ -5,7 +5,7 @@ import { ChangeEvent, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
-import { X } from "lucide-react";
+import { Loader2, X } from "lucide-react";
 
 import { RankTable } from "@/components/RankTable";
 import MainBtn from "@/components/btn/MainBtn";
@@ -23,6 +23,7 @@ export default function Home() {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [ranking, setRanking] = useState<RankItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [disabled, setDisabled] = useState<boolean>(false);
 
   const { setImageUrl, clearImageUrl, imageUrl } = useImageStore();
   const { setUserResult, clearUser } = useUserStore();
@@ -84,7 +85,11 @@ export default function Home() {
   };
 
   const handleCheckWhoYR = async () => {
-    if (!imageFile) return;
+    setDisabled(true);
+    if (!imageFile) {
+      setDisabled(false);
+      return;
+    }
     clearUser();
 
     if (process.env.NODE_ENV !== "development") {
@@ -95,6 +100,7 @@ export default function Home() {
         router.push("/loading");
       } else {
         alert("분석 실패");
+        setDisabled(false);
       }
     } else {
       setUserResult({
@@ -187,11 +193,12 @@ export default function Home() {
             <button
               type={"button"}
               onClick={handleCheckWhoYR}
+              disabled={disabled}
               className={
                 "rounded-sm p-2 text-lg font-semibold hover:cursor-pointer hover:bg-white/20"
               }
             >
-              확인
+              {disabled ? <Loader2 className={"animate-spin"} /> : "확인"}
             </button>
           </div>
           {/*사용자 이미지 섹션*/}
